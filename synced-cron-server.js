@@ -27,33 +27,63 @@ SyncedCron = {
 Later = Npm.require('later');
 tz = Npm.require("timezone");
 Later.date.timezone = function(timezone) {
-  var _tz;
-  _tz = Npm.require("timezone/" + timezone);
-  Later.date.build = function(Y, M, D, h, m, s) {
-    return new Date(tz([Y, M + 1, D, h, m, s], _tz, timezone));
+  switch (timezone){
+    case true:
+      Later.date.build = function(Y, M, D, h, m, s) {
+        return new Date(Y, M, D, h, m, s);
+      };
+      var get = "get", d = Date.prototype;
+      Later.date.getYear = d[get + "FullYear"];
+      Later.date.getMonth = d[get + "Month"];
+      Later.date.getDate = d[get + "Date"];
+      Later.date.getDay = d[get + "Day"];
+      Later.date.getHour = d[get + "Hours"];
+      Later.date.getMin = d[get + "Minutes"];
+      Later.date.getSec = d[get + "Seconds"];
+      return Later.date.isUTC = false;
+    case false:
+      Later.date.build = function(Y, M, D, h, m, s) {
+        return new Date(Date.UTC(Y, M, D, h, m, s));
+      };
+      var get = "getUTC", d = Date.prototype;
+      Later.date.getYear = d[get + "FullYear"];
+      Later.date.getMonth = d[get + "Month"];
+      Later.date.getDate = d[get + "Date"];
+      Later.date.getDay = d[get + "Day"];
+      Later.date.getHour = d[get + "Hours"];
+      Later.date.getMin = d[get + "Minutes"];
+      Later.date.getSec = d[get + "Seconds"];
+      return Later.date.isUTC = true;
+    default:
+      var _tz;
+      _tz = require("timezone/" + timezone);
+      Later.date.build = function(Y, M, D, h, m, s) {
+        return new Date(tz([Y, M + 1, D, h, m, s], _tz, timezone));
+      };
+      
+      Later.date.getYear = function() {
+        return +tz(this, "%Y", _tz, timezone);
+      };
+      Later.date.getMonth = function() {
+        return +tz(this, "%-m", _tz, timezone) - 1;
+      };
+      Later.date.getDate = function() {
+        return +tz(this, "%-d", _tz, timezone);
+      };
+      Later.date.getDay = function() {
+        return +tz(this, "%-w", _tz, timezone);
+      };
+      Later.date.getHour = function() {
+        return +tz(this, "%-H", _tz, timezone);
+      };
+      Later.date.getMin = function() {
+        return +tz(this, "%-M", _tz, timezone);
+      };
+      Later.date.getSec = function() {
+        return +tz(this, "%-S", _tz, timezone);
+      };
+      return Later.date.isUTC = false;
   };
-  Later.date.getYear = function() {
-    return +tz(this, "%Y", _tz, timezone);
-  };
-  Later.date.getMonth = function() {
-    return +tz(this, "%-m", _tz, timezone) - 1;
-  };
-  Later.date.getDate = function() {
-    return +tz(this, "%-d", _tz, timezone);
-  };
-  Later.date.getDay = function() {
-    return +tz(this, "%-w", _tz, timezone);
-  };
-  Later.date.getHour = function() {
-    return +tz(this, "%-H", _tz, timezone);
-  };
-  Later.date.getMin = function() {
-    return +tz(this, "%-M", _tz, timezone);
-  };
-  Later.date.getSec = function() {
-    return +tz(this, "%-S", _tz, timezone);
-  };
-  return Later.date.isUTC = false;
 };
 
 /*

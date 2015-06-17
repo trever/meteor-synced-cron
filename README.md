@@ -80,7 +80,7 @@ You can configure SyncedCron with the `config` method. Defaults are:
     collectionName: 'cronHistory',
 
     // Default to localTime
-    timeline: 'utc' | 'localtime' | 'America/New_York',
+    timezone: 'utc' | 'localtime' | 'America/New_York',
 
     /*
       TTL in seconds for history records in collection to expire
